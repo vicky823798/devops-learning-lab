@@ -2,27 +2,35 @@ name: DevOps Learning Lab CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # Step 1: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          pip install -r app/requirements.txt
-          pip install pytest
+          pip install flask pytest
 
+      # Step 4: Run tests
       - name: Run tests
         run: |
           cd app
-          pytest
+          python -m pytest
+
+      # Step 5: Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t devops-learning-lab .
